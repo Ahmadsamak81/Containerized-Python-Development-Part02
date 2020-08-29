@@ -1,7 +1,11 @@
 import os
-from flask import Flask
+import flask
+import json
 import mysql.connector
 
+# for debugging from Visual Studio Code -- turn off flask debugger first
+# import ptvsd
+# ptvsd.enable_attach(address=('0.0.0.0', 3000))
 
 class DBManager:
     def __init__(self, database='example', host="db", user="root", password_file=None):
@@ -9,7 +13,7 @@ class DBManager:
         self.connection = mysql.connector.connect(
             user=user, 
             password=pf.read(),
-            host=host, # name of the mysql service as set in the docker-compose file
+            host=host,
             database=database,
             auth_plugin='mysql_native_password'
         )
@@ -29,11 +33,10 @@ class DBManager:
             rec.append(c[0])
         return rec
 
-
-server = Flask(__name__)
+server = flask.Flask(__name__)
 conn = None
 
-@server.route('/')
+@server.route('/blogs')
 def listBlog():
     global conn
     if not conn:
@@ -41,11 +44,16 @@ def listBlog():
         conn.populate_db()
     rec = conn.query_titles()
 
-    response = ''
+    result = []
     for c in rec:
-        response = response  + '<div>   Hello  ' + c + '</div>'
-    return response
+        result.append(c)
+
+    return flask.jsonify({"response": result})
+
+@server.route('/')
+def hello():
+    return flask.jsonify({"response": "Hello from Docker!"})
 
 
 if __name__ == '__main__':
-    server.run()
+    server.run(debug=True, host='0.0.0.0', port=5000)

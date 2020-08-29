@@ -17,6 +17,8 @@ services:
   app:
     build: app
     restart: always
+    secrets:
+      - db-password
     networks:
       - backend-network
       - frontend-network
@@ -28,11 +30,11 @@ services:
       - 80:80
     networks:
       - frontend-network
-  volumes:
-    db-data:
-  secrets:
-    db-password:
-      file:db/password.txt
-  networks:
-    backend-network:
-    frontend-network:
+volumes:
+  db-data:
+secrets:
+  db-password:
+    file: db/password.txt
+networks:
+  backend-network:
+  frontend-network:
