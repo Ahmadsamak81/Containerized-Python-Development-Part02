@@ -13,11 +13,12 @@ services:
     environment:
       - MYSQL_DATABASE=example
       - MYSQL_ROOT_PASSWORD_FILE=/run/secrets/db-password
-
+    ports:
+      - 8083:3306
   app:
     build: app
     restart: always
-    secrets:
+    seQccrets:
       - db-password
     networks:
       - backend-network
