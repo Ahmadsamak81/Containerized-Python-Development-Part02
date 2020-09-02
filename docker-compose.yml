@@ -18,7 +18,7 @@ services:
   app:
     build: app
     restart: always
-    seQccrets:
+    secrets:
       - db-password
     networks:
       - backend-network
